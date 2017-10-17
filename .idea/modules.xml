@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tank-game.iml" filepath="$PROJECT_DIR$/.idea/modules/tank-game.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tank-game_main.iml" filepath="$PROJECT_DIR$/.idea/modules/tank-game_main.iml" group="tank-game" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tank-game_test.iml" filepath="$PROJECT_DIR$/.idea/modules/tank-game_test.iml" group="tank-game" />
+    </modules>
+  </component>
+</project>
