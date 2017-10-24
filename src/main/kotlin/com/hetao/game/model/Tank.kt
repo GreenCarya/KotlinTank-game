@@ -95,4 +95,40 @@ class Tank(override var x: Int, override var y: Int) : Movable {
 
         this.badDirection = direction
     }
+
+    fun shot(): Bullet {
+
+
+//        return Bullet(currentDirection, bulletX,bulletY)
+        return Bullet(currentDirection, { bulletWidth, bulletHeight ->
+            var bulletX = 0
+            var bulletY = 0
+
+            val tankX = x
+            val tankY = y
+            val tankWidth = width
+            val tankHeight = height
+
+            when (currentDirection) {
+                Direction.UP -> {
+                    bulletX = tankX + (tankWidth - bulletWidth) / 2
+                    bulletY = tankY - bulletHeight / 2
+                }
+                Direction.DOWN -> {
+                    bulletX = tankX + (tankWidth - bulletWidth) / 2
+                    bulletY = tankY + tankHeight - bulletHeight / 2
+                }
+                Direction.LEFT -> {
+                    bulletX = tankX - bulletWidth / 2
+                    bulletY = tankY + (tankHeight - bulletHeight) / 2
+                }
+                Direction.RIGHT -> {
+                    bulletX = tankX + tankWidth - bulletWidth / 2
+                    bulletY = tankY + (tankHeight - bulletHeight) / 2
+                }
+            }
+            //闭包最后一行是返回值
+            Pair(bulletX, bulletY)
+        })
+    }
 }

@@ -1,5 +1,6 @@
 package com.hetao.game
 
+import com.hetao.game.business.AutoMovable
 import com.hetao.game.business.Blockable
 import com.hetao.game.business.Movable
 import com.hetao.game.enums.Direction
@@ -69,6 +70,10 @@ class GameWindow : Window(title = "坦克1.0"
             KeyCode.D -> {
                 tank.move(Direction.RIGHT)
             }
+            KeyCode.ENTER -> {
+                val bullet = tank.shot()
+                views.add(bullet)
+            }
             else -> {
 
             }
@@ -103,6 +108,11 @@ class GameWindow : Window(title = "坦克1.0"
 
             //通知可以为空。循环一遍没有找到可能会发生碰撞的物体
             move.notifyCollision(badDirection, badBlock)
+        }
+
+        //检测自动移动能力的物体，让他们自动动起来
+        views.filter { it is AutoMovable }.forEach {
+            (it as AutoMovable).autoMove()
         }
     }
 }
