@@ -1,8 +1,6 @@
 package com.hetao.game
 
-import com.hetao.game.business.AutoMovable
-import com.hetao.game.business.Blockable
-import com.hetao.game.business.Movable
+import com.hetao.game.business.*
 import com.hetao.game.enums.Direction
 import com.hetao.game.model.*
 import javafx.scene.input.KeyCode
@@ -126,5 +124,27 @@ class GameWindow : Window(title = "坦克1.0"
                 views.remove(it)
             }
         }
+
+        //检测具备攻击能力的和遭受攻击的是否发生碰撞
+        //1.过滤具备攻击能力的
+        views.filter { it is Attackable }.forEach attackTag@ { attack ->
+
+            attack as Attackable
+            //2. 过滤 遭受攻击能力的物体
+            views.filter { it is Sufferable }.forEach sufferTag@ { suffer ->
+
+                suffer as Sufferable
+                //3. 判断是否发生碰撞
+                if (attack.isCollision(suffer)) {
+                    //产生碰撞,找到碰撞者
+                    //通知攻击者产生碰撞
+                    attack.notifyAttack(suffer)
+                    //通知被攻击者 产生碰撞
+                    suffer.notifySuffer(attack)
+                    return@sufferTag
+                }
+            }
+        }
+
     }
 }
