@@ -9,13 +9,17 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import org.itheima.kotlin.game.core.Window
 import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
+import javax.security.auth.Destroyable
 
 class GameWindow : Window(title = "坦克1.0"
         , icon = "img/water.gif"
         , width = Config.gameWidth
         , height = Config.gameHeight) {
 
-    private val views = arrayListOf<View>()
+    //改为线程安全的集合
+//    private val views = arrayListOf<View>()
+    private val views = CopyOnWriteArrayList<View>()
     //晚点创建
     private lateinit var tank: Tank
 
@@ -113,6 +117,14 @@ class GameWindow : Window(title = "坦克1.0"
         //检测自动移动能力的物体，让他们自动动起来
         views.filter { it is AutoMovable }.forEach {
             (it as AutoMovable).autoMove()
+        }
+
+        //移除销毁的物体
+        views.filter { it is Destroyable }.forEach {
+            //如果物体被销毁了，再执行移除
+            if ((it as Destroyable).isDestroyed) {
+                views.remove(it)
+            }
         }
     }
 }

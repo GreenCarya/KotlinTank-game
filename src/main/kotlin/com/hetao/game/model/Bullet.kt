@@ -2,6 +2,7 @@ package com.hetao.game.model
 
 import com.hetao.game.Config
 import com.hetao.game.business.AutoMovable
+import com.hetao.game.business.Destoryable
 import com.hetao.game.enums.Direction
 import org.itheima.kotlin.game.core.Painter
 
@@ -10,7 +11,8 @@ import org.itheima.kotlin.game.core.Painter
  *
  * 构造方法传入一个函数 。 函数返回一个存储两个值的对象Pair
  */
-class Bullet(override val currentDirection: Direction, create: (width: Int, height: Int) -> Pair<Int, Int>) : AutoMovable {
+class Bullet(override val currentDirection: Direction, create: (width: Int, height: Int) -> Pair<Int, Int>)
+    : AutoMovable,Destoryable {
 
     override val speed: Int = 10
 
@@ -52,5 +54,14 @@ class Bullet(override val currentDirection: Direction, create: (width: Int, heig
             Direction.LEFT -> x -= speed
             Direction.RIGHT -> x += speed
         }
+    }
+
+    override fun isDestoryed(): Boolean {
+        //子弹在脱离了屏幕后，需要被销毁
+        if (x< -width) return true
+        if (x > Config.gameWidth) return true
+        if (y < -height) return true
+        if (y > Config.gameHeight) return true
+        return false
     }
 }
