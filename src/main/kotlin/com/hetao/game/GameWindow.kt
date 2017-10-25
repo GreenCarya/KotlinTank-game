@@ -81,8 +81,11 @@ class GameWindow : Window(title = "坦克1.0"
         }
     }
 
+    var startTime: Long = 0
+    var endTime: Long = 0
     override fun onRefresh() {
 
+        startTime = System.currentTimeMillis()
         //做一些逻辑判断的操作
         //找到移动的物体
         views.filter { it is Movable }.forEach { move ->
@@ -138,12 +141,25 @@ class GameWindow : Window(title = "坦克1.0"
                     //产生碰撞,找到碰撞者
                     //通知攻击者产生碰撞
                     attack.notifyAttack(suffer)
+
                     //通知被攻击者 产生碰撞
-                    suffer.notifySuffer(attack)
+                    val sufferView = suffer.notifySuffer(attack)
+                    sufferView?.let {
+                        //显示挨打的效果
+                        views.addAll(sufferView)
+                    }
+
                     return@sufferTag
                 }
             }
         }
 
+        endTime = System.currentTimeMillis()
+        var time1 = endTime - startTime
+        if (time1 > 200) {
+
+            println("刷新一次耗时" + time1)
+        }
     }
+
 }

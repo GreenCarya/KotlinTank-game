@@ -5,6 +5,7 @@ import com.hetao.game.business.Attackable
 import com.hetao.game.business.Blockable
 import com.hetao.game.business.Destoryable
 import com.hetao.game.business.Sufferable
+import org.itheima.kotlin.game.core.Composer
 import org.itheima.kotlin.game.core.Painter
 
 /**
@@ -23,10 +24,14 @@ class Wall(override var x: Int, override var y: Int) : Blockable ,Sufferable ,De
         Painter.drawImage("img/wall.gif", x, y)
     }
 
-    override fun notifySuffer(attackable: Attackable) {
+    override fun notifySuffer(attackable: Attackable): Array<View> ?{
         //砖墙被打到，生命值要降1
 //        println("砖墙被打到，生命值要降1")
         blood -= attackable.attackPower
+        //被打到播放声音
+        Composer.play("snd/hit.wav")
+
+        return arrayOf(Blast(x,y))
     }
 
 
