@@ -7,6 +7,11 @@ import com.hetao.game.model.View
  */
 interface Attackable:View {
 
+    /**
+     * 攻击力
+     */
+    val attackPower:Int
+
     fun isCollision(sufferable: Sufferable):Boolean
 
     //通知发生了碰撞

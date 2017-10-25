@@ -1,9 +1,12 @@
 package com.hetao.game.model
 
 import com.hetao.game.Config
+import com.hetao.game.business.Attackable
 import com.hetao.game.business.AutoMovable
 import com.hetao.game.business.Destoryable
+import com.hetao.game.business.Sufferable
 import com.hetao.game.enums.Direction
+import com.hetao.game.ext.checkCollision
 import org.itheima.kotlin.game.core.Painter
 
 /**
@@ -12,7 +15,7 @@ import org.itheima.kotlin.game.core.Painter
  * 构造方法传入一个函数 。 函数返回一个存储两个值的对象Pair
  */
 class Bullet(override val currentDirection: Direction, create: (width: Int, height: Int) -> Pair<Int, Int>)
-    : AutoMovable,Destoryable {
+    : AutoMovable, Destoryable, Attackable {
 
     override val speed: Int = 10
 
@@ -21,6 +24,10 @@ class Bullet(override val currentDirection: Direction, create: (width: Int, heig
 
     override var x: Int = 0
     override var y: Int = 0
+
+    private var isDestroyed = false
+
+    override val attackPower: Int = 1
 
     private val imagePath = when (currentDirection) {
         Direction.UP -> "img/shot_top.gif"
@@ -57,11 +64,27 @@ class Bullet(override val currentDirection: Direction, create: (width: Int, heig
     }
 
     override fun isDestoryed(): Boolean {
+
+        if (isDestroyed) return true
         //子弹在脱离了屏幕后，需要被销毁
-        if (x< -width) return true
+        if (x < -width) return true
         if (x > Config.gameWidth) return true
         if (y < -height) return true
         if (y > Config.gameHeight) return true
+
         return false
     }
+
+    override fun isCollision(sufferable: Sufferable): Boolean {
+        //view的扩展方法
+
+        return checkCollision(sufferable)
+    }
+
+    override fun notifyAttack(sufferable: Sufferable) {
+//        println("子弹接受到了碰撞")
+        //子弹接受到了碰撞
+        isDestroyed = true
+    }
+
 }

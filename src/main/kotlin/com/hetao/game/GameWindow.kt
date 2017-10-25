@@ -8,7 +8,6 @@ import javafx.scene.input.KeyEvent
 import org.itheima.kotlin.game.core.Window
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
-import javax.security.auth.Destroyable
 
 class GameWindow : Window(title = "坦克1.0"
         , icon = "img/water.gif"
@@ -118,9 +117,9 @@ class GameWindow : Window(title = "坦克1.0"
         }
 
         //移除销毁的物体
-        views.filter { it is Destroyable }.forEach {
+        views.filter { it is Destoryable }.forEach {
             //如果物体被销毁了，再执行移除
-            if ((it as Destroyable).isDestroyed) {
+            if ((it as Destoryable).isDestoryed()) {
                 views.remove(it)
             }
         }

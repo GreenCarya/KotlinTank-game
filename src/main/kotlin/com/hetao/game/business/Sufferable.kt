@@ -7,5 +7,10 @@ import com.hetao.game.model.View
  */
 interface Sufferable:View {
 
+    /**
+     * 能挨打的物体具有生命值
+     */
+    val blood:Int
+
     fun notifySuffer(attackable: Attackable)
 }
