@@ -66,35 +66,6 @@ class Tank(override var x: Int, override var y: Int) : Movable {
         if (y > (Config.gameHeight - Config.block)) y = Config.gameHeight - Config.block
     }
 
-    override fun willCollision(block: Blockable): Direction? {
-        //未来的坐标
-        var x = this.x
-        var y = this.y
-        //将要碰撞的判断
-        when (currentDirection) {
-            Direction.UP -> y -= speed
-            Direction.DOWN -> y += speed
-            Direction.LEFT -> x -= speed
-            Direction.RIGHT -> x += speed
-        }
-
-        //碰撞的判断，检测下一步是否碰撞
-//        val collision = when {
-//            (block.y + block.height) <= y -> //如果阻挡物在运动物的上方，不碰撞
-//                false
-//            block.y >= (y + height) -> //如果阻挡物在运动物的下方，不碰撞
-//                false
-//            (block.x + block.width) <= x -> //如果阻挡物在运动物的左侧，不碰撞
-//                false
-//            else -> (x + width) > block.x //如果阻挡物在运动物的右侧，不碰撞
-//        }
-
-        val collision = checkCollision(x, y, width, height
-                , block.x, block.y, block.width, block.height)
-
-        return if (collision) currentDirection else null
-    }
-
     override fun notifyCollision(direction: Direction?, block: Blockable?) {
 
         this.badDirection = direction

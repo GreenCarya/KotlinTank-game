@@ -23,7 +23,7 @@ class GameWindow : Window(title = "坦克1.0"
     override fun onCreate() {
 
         //读取地图
-        val file = File(javaClass.getResource("/map/1.map").path)
+        val file = File(javaClass.getResource("/map/2.map").path)
         var readline: List<String> = file.readLines()
 
         var lineNums = 0
@@ -38,6 +38,7 @@ class GameWindow : Window(title = "坦克1.0"
                     '草' -> views.add(Grass(columnNums * Config.block, lineNums * Config.block))
                     '铁' -> views.add(Steel(columnNums * Config.block, lineNums * Config.block))
                     '水' -> views.add(Water(columnNums * Config.block, lineNums * Config.block))
+                    '敌' -> views.add(Enemy(columnNums * Config.block, lineNums * Config.block))
                 }
                 columnNums++
             }
@@ -94,7 +95,9 @@ class GameWindow : Window(title = "坦克1.0"
             var badDirection: Direction? = null
             var badBlock: Blockable? = null
 
-            views.filter { it is Blockable }.forEach blackTag@ { block ->
+            //如果一个物体同时具有阻挡属性和移动属性。
+            // 自己不要和自己比较
+            views.filter { (it is Blockable) and (move != it) }.forEach blackTag@ { block ->
                 //循环判断
                 block as Blockable//强制转换
 
