@@ -1,12 +1,19 @@
 package com.hetao.game.model
 
 import com.hetao.game.Config
+import com.hetao.game.business.Attackable
 import com.hetao.game.business.Blockable
 import com.hetao.game.business.Movable
+import com.hetao.game.business.Sufferable
 import com.hetao.game.enums.Direction
 import org.itheima.kotlin.game.core.Painter
 
-class Tank(override var x: Int, override var y: Int) : Movable {
+/**
+ * 我方坦克。具备阻挡能力
+ * 移动能力
+ * 挨打能力
+ */
+class Tank(override var x: Int, override var y: Int) : Movable, Blockable, Sufferable {
 
     override val width: Int = Config.block
     override val height: Int = Config.block
@@ -18,6 +25,8 @@ class Tank(override var x: Int, override var y: Int) : Movable {
 
     //坦克不可以走的方向
     private var badDirection: Direction? = null
+    //血量
+    override var blood: Int = 3
 
     override fun draw() {
 
@@ -103,6 +112,14 @@ class Tank(override var x: Int, override var y: Int) : Movable {
             }
             //闭包最后一行是返回值
             Pair(bulletX, bulletY)
-        })
+        }, this)
     }
+
+    override fun notifySuffer(attackable: Attackable): Array<View>? {
+
+        blood -= attackable.attackPower
+        return arrayOf(Blast(x, y))
+    }
+
+
 }
