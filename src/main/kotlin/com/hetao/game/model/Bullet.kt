@@ -14,8 +14,8 @@ import org.itheima.kotlin.game.core.Painter
  *
  * 构造方法传入一个函数 。 函数返回一个存储两个值的对象Pair
  */
-class Bullet(override val currentDirection: Direction, create: (width: Int, height: Int) -> Pair<Int, Int>
-             , override val owner: View)
+class Bullet(override val owner: View, override val currentDirection: Direction
+             , create: (width: Int, height: Int) -> Pair<Int, Int>)
     : AutoMovable, Destoryable, Attackable {
 
     override val speed: Int = 10

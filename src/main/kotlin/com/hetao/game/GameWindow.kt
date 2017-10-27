@@ -137,7 +137,7 @@ class GameWindow : Window(title = "坦克1.0"
             attack as Attackable
             //2. 过滤 遭受攻击能力的物体
             // 攻击方的源头不可以是发射方
-            views.filter { (it is Sufferable) and (attack != it) }.forEach sufferTag@ { suffer ->
+            views.filter { (it is Sufferable) and (attack.owner != it) }.forEach sufferTag@ { suffer ->
 
                 suffer as Sufferable
                 //3. 判断是否发生碰撞
@@ -158,11 +158,14 @@ class GameWindow : Window(title = "坦克1.0"
             }
         }
 
-        //自动设计
+        //自动射击
         views.filter { it is AutoShot }.forEach {
             it as AutoShot
             val autoShot = it.autoShot()
-            views.add(autoShot)
+            autoShot?.let {
+
+                views.add(autoShot)
+            }
         }
 
         endTime = System.currentTimeMillis()

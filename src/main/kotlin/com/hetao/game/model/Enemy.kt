@@ -10,8 +10,7 @@ import java.util.*
  * 敌方坦克
  *
  */
-class Enemy(override var x: Int
-            , override var y: Int)
+class Enemy(override var x: Int, override var y: Int)
     : Movable, AutoMovable, Blockable, AutoShot, Sufferable, Destoryable {
 
     override var currentDirection: Direction = Direction.DOWN
@@ -25,11 +24,11 @@ class Enemy(override var x: Int
     private var badDirection: Direction? = null
 
     private var lastShotTime = 0L
-    private var shotFrequency = 900
+    private var shotFrequency = 800
 
     private var lastMoveTime = 0L
     private var moveFrequency = 40
-
+    //血量
     override var blood: Int = 2
 
     override fun draw() {
@@ -100,7 +99,7 @@ class Enemy(override var x: Int
         if ((current - lastShotTime) < shotFrequency) return null
         lastShotTime = current
 
-        return Bullet(currentDirection, { bulletWidth, bulletHeight ->
+        return Bullet(this, currentDirection, { bulletWidth, bulletHeight ->
             var bulletX = 0
             var bulletY = 0
 
@@ -129,13 +128,15 @@ class Enemy(override var x: Int
             }
             //闭包最后一行是返回值
             Pair(bulletX, bulletY)
-        }, this)
+        })
 
     }
 
     override fun notifySuffer(attackable: Attackable): Array<View>? {
         //如果受到了攻击方的挨打不掉血
-        if (attackable.owner is Enemy) return null
+        if (attackable.owner is Enemy){
+            return null
+        }
 
         blood -= attackable.attackPower
         return arrayOf(Blast(x, y))

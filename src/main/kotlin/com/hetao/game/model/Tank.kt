@@ -26,7 +26,7 @@ class Tank(override var x: Int, override var y: Int) : Movable, Blockable, Suffe
     //坦克不可以走的方向
     private var badDirection: Direction? = null
     //血量
-    override var blood: Int = 3
+    override var blood: Int = 4
 
     override fun draw() {
 
@@ -83,7 +83,7 @@ class Tank(override var x: Int, override var y: Int) : Movable, Blockable, Suffe
     fun shot(): Bullet {
 
 //        return Bullet(currentDirection, bulletX,bulletY)
-        return Bullet(currentDirection, { bulletWidth, bulletHeight ->
+        return Bullet(this, currentDirection, { bulletWidth, bulletHeight ->
             var bulletX = 0
             var bulletY = 0
 
@@ -112,7 +112,7 @@ class Tank(override var x: Int, override var y: Int) : Movable, Blockable, Suffe
             }
             //闭包最后一行是返回值
             Pair(bulletX, bulletY)
-        }, this)
+        })
     }
 
     override fun notifySuffer(attackable: Attackable): Array<View>? {
