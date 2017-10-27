@@ -73,7 +73,6 @@ class Tank(override var x: Int, override var y: Int) : Movable {
 
     fun shot(): Bullet {
 
-
 //        return Bullet(currentDirection, bulletX,bulletY)
         return Bullet(currentDirection, { bulletWidth, bulletHeight ->
             var bulletX = 0

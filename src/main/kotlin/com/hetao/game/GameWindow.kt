@@ -157,6 +157,13 @@ class GameWindow : Window(title = "坦克1.0"
             }
         }
 
+        //自动设计
+        views.filter { it is AutoShot }.forEach {
+            it as AutoShot
+            val autoShot = it.autoShot()
+            views.add(autoShot)
+        }
+
         endTime = System.currentTimeMillis()
         var time1 = endTime - startTime
         if (time1 > 200) {

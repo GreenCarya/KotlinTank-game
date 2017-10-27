@@ -2,6 +2,7 @@ package com.hetao.game.model
 
 import com.hetao.game.Config
 import com.hetao.game.business.AutoMovable
+import com.hetao.game.business.AutoShot
 import com.hetao.game.business.Blockable
 import com.hetao.game.business.Movable
 import com.hetao.game.enums.Direction
@@ -11,7 +12,9 @@ import java.util.*
 /**
  * 敌方坦克
  */
-class Enemy(override var x: Int, override var y: Int) : Movable, AutoMovable,Blockable {
+class Enemy(override var x: Int
+            , override var y: Int)
+    : Movable, AutoMovable, Blockable, AutoShot {
 
     override var currentDirection: Direction = Direction.DOWN
 
@@ -22,6 +25,12 @@ class Enemy(override var x: Int, override var y: Int) : Movable, AutoMovable,Blo
 
     //坦克不可以走的方向
     private var badDirection: Direction? = null
+
+    private var lastShotTime = 0L
+    private var shotFrequency = 900
+
+    private var lastMoveTime = 0L
+    private var moveFrequency = 40
 
     override fun draw() {
 
@@ -41,6 +50,10 @@ class Enemy(override var x: Int, override var y: Int) : Movable, AutoMovable,Blo
     }
 
     override fun autoMove() {
+
+        val current = System.currentTimeMillis();
+        if ((current - lastMoveTime) < moveFrequency) return
+        lastMoveTime = current
 
         if (currentDirection == badDirection) {
             //不允许错误方向
@@ -80,5 +93,45 @@ class Enemy(override var x: Int, override var y: Int) : Movable, AutoMovable,Blo
         }
         return direction
     }
+
+    override fun autoShot(): View? {
+
+        val current = System.currentTimeMillis();
+        if ((current - lastShotTime) < shotFrequency) return null
+        lastShotTime = current
+
+        return Bullet(currentDirection, { bulletWidth, bulletHeight ->
+            var bulletX = 0
+            var bulletY = 0
+
+            val tankX = x
+            val tankY = y
+            val tankWidth = width
+            val tankHeight = height
+
+            when (currentDirection) {
+                Direction.UP -> {
+                    bulletX = tankX + (tankWidth - bulletWidth) / 2
+                    bulletY = tankY - bulletHeight / 2
+                }
+                Direction.DOWN -> {
+                    bulletX = tankX + (tankWidth - bulletWidth) / 2
+                    bulletY = tankY + tankHeight - bulletHeight / 2
+                }
+                Direction.LEFT -> {
+                    bulletX = tankX - bulletWidth / 2
+                    bulletY = tankY + (tankHeight - bulletHeight) / 2
+                }
+                Direction.RIGHT -> {
+                    bulletX = tankX + tankWidth - bulletWidth / 2
+                    bulletY = tankY + (tankHeight - bulletHeight) / 2
+                }
+            }
+            //闭包最后一行是返回值
+            Pair(bulletX, bulletY)
+        })
+
+    }
+
 
 }
