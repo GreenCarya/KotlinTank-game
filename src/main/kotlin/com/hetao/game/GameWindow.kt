@@ -49,6 +49,9 @@ class GameWindow : Window(title = "坦克1.0"
         //添加坦克
         tank = Tank(Config.block * 10, Config.block * 12)
         views.add(tank)
+
+        //添加大本营
+        views.add(Camp(Config.gameWidth / 2 - Config.block, Config.gameHeight - 96))
     }
 
     override fun onDisplay() {
