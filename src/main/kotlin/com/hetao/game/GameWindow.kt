@@ -19,6 +19,17 @@ class GameWindow : Window(title = "坦克1.0"
     private val views = CopyOnWriteArrayList<View>()
     //晚点创建
     private lateinit var tank: Tank
+    //游戏是否结束
+    private var gameOver: Boolean = false
+
+    //敌方数量
+    private var enemyTotalSize = 3
+    //敌方激活的数量
+    private var enemyActiveSize = 1
+    //敌方的出生点
+    private val enemyBornLocation = arrayListOf<Pair<Int, Int>>()
+    //敌方出生点的下标
+    private var bornIndex = 0
 
     override fun onCreate() {
 
@@ -38,7 +49,7 @@ class GameWindow : Window(title = "坦克1.0"
                     '草' -> views.add(Grass(columnNums * Config.block, lineNums * Config.block))
                     '铁' -> views.add(Steel(columnNums * Config.block, lineNums * Config.block))
                     '水' -> views.add(Water(columnNums * Config.block, lineNums * Config.block))
-                    '敌' -> views.add(Enemy(columnNums * Config.block, lineNums * Config.block))
+                    '敌' -> enemyBornLocation.add(Pair(columnNums * Config.block, lineNums * Config.block))
                 }
                 columnNums++
             }
@@ -62,32 +73,55 @@ class GameWindow : Window(title = "坦克1.0"
     }
 
     override fun onKeyPressed(event: KeyEvent) {
-        when (event.code) {
-            KeyCode.W -> {
-                tank.move(Direction.UP)
-            }
-            KeyCode.S -> {
-                tank.move(Direction.DOWN)
-            }
-            KeyCode.A -> {
-                tank.move(Direction.LEFT)
-            }
-            KeyCode.D -> {
-                tank.move(Direction.RIGHT)
-            }
-            KeyCode.ENTER -> {
-                val bullet = tank.shot()
-                views.add(bullet)
-            }
-            else -> {
 
+        if (!gameOver) {
+            when (event.code) {
+                KeyCode.W -> {
+                    tank.move(Direction.UP)
+                }
+                KeyCode.S -> {
+                    tank.move(Direction.DOWN)
+                }
+                KeyCode.A -> {
+                    tank.move(Direction.LEFT)
+                }
+                KeyCode.D -> {
+                    tank.move(Direction.RIGHT)
+                }
+                KeyCode.ENTER -> {
+                    val bullet = tank.shot()
+                    views.add(bullet)
+                }
+                else -> {
+
+                }
             }
         }
+
     }
 
     var startTime: Long = 0
     var endTime: Long = 0
     override fun onRefresh() {
+
+        //移除销毁的物体
+        views.filter { it is Destoryable }.forEach {
+            //如果物体被销毁了，再执行移除
+            if ((it as Destoryable).isDestoryed()) {
+                views.remove(it)
+
+                if (it is Enemy) {
+                    enemyTotalSize--
+                }
+
+                val showDestroy = it.showDestroy()
+                showDestroy?.let {
+                    views.addAll(showDestroy)
+                }
+            }
+        }
+        //游戏结束
+        if (gameOver == true) return
 
         startTime = System.currentTimeMillis()
         //做一些逻辑判断的操作
@@ -125,13 +159,6 @@ class GameWindow : Window(title = "坦克1.0"
             (it as AutoMovable).autoMove()
         }
 
-        //移除销毁的物体
-        views.filter { it is Destoryable }.forEach {
-            //如果物体被销毁了，再执行移除
-            if ((it as Destoryable).isDestoryed()) {
-                views.remove(it)
-            }
-        }
 
         //检测具备攻击能力的和遭受攻击的是否发生碰撞
         //1.过滤具备攻击能力的
@@ -140,7 +167,8 @@ class GameWindow : Window(title = "坦克1.0"
             attack as Attackable
             //2. 过滤 遭受攻击能力的物体
             // 攻击方的源头不可以是发射方
-            views.filter { (it is Sufferable) and (attack.owner != it) }.forEach sufferTag@ { suffer ->
+            // 攻击方不可以打受攻击方
+            views.filter { (it is Sufferable) and (attack.owner != it) and (attack != it) }.forEach sufferTag@ { suffer ->
 
                 suffer as Sufferable
                 //3. 判断是否发生碰撞
@@ -176,6 +204,20 @@ class GameWindow : Window(title = "坦克1.0"
         if (time1 > 200) {
 
             println("刷新一次耗时" + time1)
+        }
+
+        //如果大本营为空。或者
+        if ((views.filter { it is Camp }.isEmpty()) or (enemyTotalSize <= 0)) {
+            gameOver = true
+        }
+
+        //动态添加敌方坦克
+        if ((enemyTotalSize > 0) and (views.filter { it is Enemy }.size < enemyActiveSize)) {
+            var index = bornIndex % enemyBornLocation.size
+            var pair = enemyBornLocation[index]
+            views.add(Enemy(pair.first, pair.second))
+
+            bornIndex++
         }
     }
 

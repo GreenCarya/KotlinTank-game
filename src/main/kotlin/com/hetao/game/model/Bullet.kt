@@ -16,7 +16,9 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Bullet(override val owner: View, override val currentDirection: Direction
              , create: (width: Int, height: Int) -> Pair<Int, Int>)
-    : AutoMovable, Destoryable, Attackable {
+    : AutoMovable, Destoryable, Attackable ,Sufferable{
+
+    override val blood: Int =1
 
     override val speed: Int = 10
 
@@ -86,6 +88,11 @@ class Bullet(override val owner: View, override val currentDirection: Direction
 //        println("子弹接受到了碰撞")
         //子弹接受到了碰撞
         isDestroyed = true
+    }
+
+
+    override fun notifySuffer(attackable: Attackable): Array<View>? {
+        return arrayOf(Blast(x,y))
     }
 
 }

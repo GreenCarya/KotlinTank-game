@@ -3,6 +3,7 @@ package com.hetao.game.model
 import com.hetao.game.Config
 import com.hetao.game.business.Attackable
 import com.hetao.game.business.Blockable
+import com.hetao.game.business.Destoryable
 import com.hetao.game.business.Sufferable
 import org.itheima.kotlin.game.core.Painter
 
@@ -11,7 +12,7 @@ import org.itheima.kotlin.game.core.Painter
  * 具备阻挡的功能
  * 可以被攻击
  */
-class Camp(override var x: Int, override var y: Int) : Blockable, Sufferable {
+class Camp(override var x: Int, override var y: Int) : Blockable, Sufferable, Destoryable {
 
     override var width: Int = Config.block * 2
     override var height: Int = Config.block + 32
@@ -82,6 +83,24 @@ class Camp(override var x: Int, override var y: Int) : Blockable, Sufferable {
             )
         }
         return null
+    }
+
+    override fun isDestoryed(): Boolean = blood <= 0
+
+    override fun showDestroy(): Array<View>? {
+        //显示爆炸效果
+        return arrayOf(Blast(x - 32, y - 32)
+                , Blast(x, y - 32)
+                , Blast(x + 32, y - 32)
+                //第二排
+                , Blast(x - 32, y)
+                , Blast(x, y)
+                , Blast(x + 32, y)
+                //第3排
+                , Blast(x - 32, y + 32)
+                , Blast(x, y + 32)
+                , Blast(x + 32, y + 32)
+        )
     }
 
 

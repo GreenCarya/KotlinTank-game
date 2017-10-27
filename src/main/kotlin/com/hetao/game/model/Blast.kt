@@ -35,5 +35,8 @@ class Blast(override val x: Int, override val y: Int) : Destoryable {
         return index >= imagePaths.size
     }
 
+    override fun showDestroy(): Array<View>? {
+        return null
+    }
 
 }
